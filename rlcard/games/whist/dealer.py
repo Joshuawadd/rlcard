@@ -15,6 +15,11 @@ class WhistDealer(Dealer):
         '''
         self.np_random.shuffle(self.deck)
 
+    def choose_trump_suit(self):
+        suit_list = ['S', 'H', 'D', 'C']
+        return (random.choice(suit_list))
+
+
     def deal_card(self):
         ''' Deal one card from the deck
 
