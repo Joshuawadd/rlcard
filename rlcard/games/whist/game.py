@@ -1,9 +1,11 @@
 from rlcard.utils.utils import init_standard_deck
+import numpy as np
+
 from rlcard.core import Game
-from rlcard.core import Dealer
-from rlcard.core import Judger
-from rlcard.core import Player
-from rlcard.core import Round
+from rlcard.games.whist import Dealer
+from rlcard.games.whist import Judger
+from rlcard.games.whist import Player
+from rlcard.games.whist import Round
 
 class WhistGame(Game):
 
@@ -29,7 +31,7 @@ class WhistGame(Game):
 
         self.round = Round(self.dealer, self.num_players, self.np_random)
 
-        trump_suit = self.dealer.choose_trump_suit()
+        self.trump_suit = self.dealer.choose_trump_suit()
 
         player_id = self.round.current_player
         state = self.get_state(player_id)
@@ -38,6 +40,11 @@ class WhistGame(Game):
     def step(self, action):
         ''' Perform one draw of the game and return next player number, and the state for next player
         '''
+
+        self.round.proceed_round(self.players, action)
+        player_id = self.round.current_player
+        state = self.get_state(player_id)
+        return state, player_id
         raise NotImplementedError
 
     def step_back(self):

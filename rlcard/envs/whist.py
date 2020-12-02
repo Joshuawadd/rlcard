@@ -8,5 +8,3 @@ class WhistEnv(Env):
         self.name = 'whist'
         self.game = Game()
         super().__init__(config)
-
-    def _extract_state(self,state):
