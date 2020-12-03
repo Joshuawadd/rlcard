@@ -4,14 +4,14 @@ import numpy as np
 
 class WhistRound(Round):
 
-    def __init__(self):
+    def __init__(self, dealer, num_players, np_random):
         ''' When the game starts, round id should be 1
         '''
 
         raise NotImplementedError
 
     def start_new_round (self, game_pointer, raised=None):
-        
+
 
 
     def proceed_round(self, players, action):

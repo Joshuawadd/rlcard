@@ -12,7 +12,7 @@ class WhistGame(Game):
     def __init__(self, allow_step_back=False):
         self.allow_step_back = allow_step_back
         self.np_random = np.random.RandomState()
-        self.num_players = 2
+        self.num_players = 4
         self.payoffs = [0 for _ in range(self.num_players)]
 
     def init_game(self):
@@ -21,11 +21,11 @@ class WhistGame(Game):
         # Initialize a dealer that can deal cards
         self.dealer = Dealer(self.np_random)
 
-        # Initialize four players to play the game
+        # Initialize players to play the game
         self.players = [Player(i, self.np_random) for i in range(self.num_players)]
 
-        # Deal 7 cards to each player to prepare for the game
-        for i in range(13):
+        # Deal 13 cards to each player to prepare for the game
+        for _ in range(13):
             for player in self.players:
                 player.hand.append(self.dealer.deal_card(player))
 
@@ -34,7 +34,7 @@ class WhistGame(Game):
         self.trump_suit = self.dealer.choose_trump_suit()
 
         player_id = self.round.current_player
-        state = self.get_state(player_id)
+        state = self.get_state(player_id=current_player_id)
         return state, player_id
 
     def step(self, action):
@@ -66,6 +66,8 @@ class WhistGame(Game):
         ''' Return the current player that will take actions soon
         '''
         raise NotImplementedError
+
+    def get_state(self, player_id: int):
 
     def is_over(self):
         ''' Return whether the current game is over
