@@ -8,7 +8,16 @@ class WhistRound(Round):
         ''' When the game starts, round id should be 1
         '''
 
-        raise NotImplementedError
+        self.np_random = np_random
+        self.dealer = dealer
+        self.target = None
+        self.current_player = 0
+        self.num_players = num_players
+        self.played_cards = []
+        self.is_over = False
+        self.winner = None
+        self.lead_player = 0
+        self.lead_suit = None
 
     def start_new_round (self, game_pointer, raised=None):
 
@@ -19,7 +28,37 @@ class WhistRound(Round):
         '''
 
         player = players[self.current_player]
-        card_info = action.split('-')
-        color = card_info[0]
-        trait = card_info[1]
-        raise NotImplementedError
+        suit = action[0]
+        rank = action[1]
+
+        for index, card in enumerate(player.hand):
+                if suit == card.suit and rank == card.rank:
+                    remove_index = index
+                    break
+
+        card = player.hand.pop(remove_index)
+        self.played_cards.append(card)
+        self.current_player = (self.current_player + self.direction) % self.num_players
+
+
+    def get_legal_actions(self, players, player_id, lead_player, lead_suit):
+        legal_actions = []
+        wild_4_actions = []
+        hand = players[player_id].hand
+        target = self.target
+        lead_suit_cards = []
+
+        if player_id == lead_player:
+            legal_actions.append(hand)
+        else
+            for card in hand:
+                if card.suit == lead_suit:
+                    lead_suit_cards.append(card)
+        if not lead_suit_cards:
+            for card in hand:
+                legal_actions.append(card)
+        else:
+            for card in lead_suit_cards:
+                legal_actions.append(card)
+        
+        return legal_actions
