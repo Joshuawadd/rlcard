@@ -1,5 +1,6 @@
 from rlcard.utils.utils import init_standard_deck
 from rlcard.core import Dealer
+import numpy as np
 
 class WhistDealer(Dealer):
 
@@ -17,7 +18,7 @@ class WhistDealer(Dealer):
 
     def choose_trump_suit(self):
         suit_list = ['S', 'H', 'D', 'C']
-        return (random.choice(suit_list))
+        return (np.random.choice(suit_list))
 
 
     def deal_card(self):

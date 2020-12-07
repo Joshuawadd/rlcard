@@ -1,4 +1,4 @@
-from rlcard.utils.utils import init_standard_deck
+from rlcard.utils.utils import init_standard_deck, elegent_form
 import numpy as np
 
 from rlcard.core import Game
@@ -23,17 +23,19 @@ class WhistGame(Game):
         # Initialize a dealer that can deal cards
         self.dealer = Dealer(self.np_random)
 
+        self.judger = Judger(self.np_random)
+
         # Initialize players to play the game
         self.players = [Player(i, self.np_random) for i in range(self.num_players)]
 
         # Deal 13 cards to each player to prepare for the game
         for _ in range(13):
             for player in self.players:
-                player.hand.append(self.dealer.deal_card(player))
+                player.hand.append(self.dealer.deal_card())
 
-        self.round = Round(self.dealer, self.num_players, self.np_random)
+        self.trump_suit = self.dealer.choose_trump_suit()    
 
-        self.trump_suit = self.dealer.choose_trump_suit()       
+        self.round = Round(self.dealer, self.num_players, self.np_random, self.judger, self.trump_suit)   
 
         # Save the hisory for stepping back to the last state.
         self.history = []
@@ -84,7 +86,7 @@ class WhistGame(Game):
     def get_player_num(self):
         ''' Retrun the number of players in the game
         '''
-        raise NotImplementedError
+        return self.num_players
 
     def get_action_num(self):
         ''' Return the number of possible actions in the game
@@ -94,7 +96,7 @@ class WhistGame(Game):
     def get_player_id(self):
         ''' Return the current player that will take actions soon
         '''
-        raise NotImplementedError
+        return self.round.current_player
 
     def get_state(self, player_id: int):
 
@@ -110,9 +112,33 @@ class WhistGame(Game):
             (list): A list of legal actions
         '''
 
-        return self.round.get_legal_actions(self.players, self.round.current_player, sealf.lead_player, self.lead_suit)
+        return self.round.get_legal_actions(self.players, self.round.current_player, self.round.lead_player, self.round.lead_suit)
 
     def is_over(self):
         ''' Return whether the current game is over
         '''
-        raise NotImplementedError
+        return self.round.is_over
+
+# For test
+if __name__ == '__main__':
+   #import time
+   #random.seed(0)
+   #start = time.time()
+   game = WhistGame()
+   for _ in range(1):
+       state, button = game.init_game()
+       print(button, str(state))
+       i = 0
+       while not game.is_over():
+           i += 1
+           legal_actions = game.get_legal_actions()
+           print('legal_actions', legal_actions)
+        #    for actions in legal_actions:
+        #        print(actions)
+           action = np.random.choice(legal_actions)
+           print('action', action)
+           print()
+           state, button = game.step(action)
+           print(button, state)
+       print(game.get_payoffs())
+   print('step', i)
