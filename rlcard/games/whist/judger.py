@@ -32,7 +32,8 @@ class WhistJudger(Judger):
             if not winner:
                 winner = players.index(player)
             else:
-                if player.tricks > winner.tricks:
+                if player.tricks > players[winner].tricks:
+                    
                     winner = players.index(player)
         
         return winner

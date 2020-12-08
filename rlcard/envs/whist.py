@@ -8,3 +8,12 @@ class WhistEnv(Env):
         self.name = 'whist'
         self.game = Game()
         super().__init__(config)
+
+    def _get_legal_actions(self):
+        return self.game.get_legal_actions()
+
+    def get_payoffs(self):
+
+        return np.array(self.game.get_payoffs())
+    
+    

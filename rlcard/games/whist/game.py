@@ -78,9 +78,10 @@ class WhistGame(Game):
             (list): Each entry corresponds to the payoff of one player
         '''
         winner = self.round.winner
-        if winner is not None and len(winner) == 1:
-            self.payoffs[winner[0]] = 1
-            self.payoffs[1 - winner[0]] = -1
+        self.payoffs[winner] = 1
+        for i in range(0,self.num_players):
+            if i != winner:
+                self.payoffs[i] = -1
         return self.payoffs
 
     def get_player_num(self):
@@ -91,7 +92,7 @@ class WhistGame(Game):
     def get_action_num(self):
         ''' Return the number of possible actions in the game
         '''
-        raise NotImplementedError
+        return 52
 
     def get_player_id(self):
         ''' Return the current player that will take actions soon
@@ -130,15 +131,15 @@ if __name__ == '__main__':
        print(button, str(state))
        i = 0
        while not game.is_over():
-           i += 1
-           legal_actions = game.get_legal_actions()
-           print('legal_actions', legal_actions)
-        #    for actions in legal_actions:
-        #        print(actions)
-           action = np.random.choice(legal_actions)
-           print('action', action)
-           print()
-           state, button = game.step(action)
-           print(button, state)
+            i += 1
+            legal_actions = game.get_legal_actions()
+            print('legal_actions', legal_actions)
+            # for actions in legal_actions:
+            #     print(actions)
+            action = np.random.choice(legal_actions)
+            print('action', action)
+            print()
+            state, button = game.step(action)
+            print(button, state)
        print(game.get_payoffs())
    print('step', i)

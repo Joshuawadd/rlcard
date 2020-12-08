@@ -49,7 +49,7 @@ register(
     entry_point='rlcard.envs.gin_rummy:GinRummyEnv',
 )
 
-# register(
-#     env_id='whist',
-#     entry_point='rlcard.envs.whist:WhistEnv',
-# )
+register(
+    env_id='whist',
+    entry_point='rlcard.envs.whist:WhistEnv',
+)

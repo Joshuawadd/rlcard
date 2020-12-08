@@ -31,6 +31,7 @@ class WhistRound(Round):
         self.old_cards.append(self.played_cards)
         self.played_cards = []
         self.current_player = self.round_winner
+        self.lead_player =  self.current_player
         if not players[self.current_player].hand:
             self.is_over = True
             self.winner = self.judger.judge_game(players)
@@ -56,6 +57,7 @@ class WhistRound(Round):
         card = player.hand.pop(remove_index)
         self.played_cards.append(card)
         self.current_player = (self.current_player + 1) % self.num_players
+        print("current player", self.current_player, self.lead_player)
         if self.current_player == self.lead_player:
             self.start_new_round(players)
 
@@ -69,20 +71,28 @@ class WhistRound(Round):
 
         if player_id == lead_player:
             for card in hand:
-                #print('hi', card.__str__())
-                legal_actions.append(card.__str__)
+                #print('hi', card.__str__()[0])
+                #x = card.__str__()
+                #legal_actions.append(x)
+                legal_actions.append(card)
         else:
             for card in hand:
                 if card.suit == lead_suit:
-                    lead_suit_cards.append(card.__str__)
+                    #x = card.__str__()
+                    #legal_actions.append(x)
+                    legal_actions.append(card)
         if not lead_suit_cards:
             for card in hand:
-                legal_actions.append(card.__str__)
+                #x = card.__str__()
+                #legal_actions.append(x)
+                legal_actions.append(card)
         else:
             for card in lead_suit_cards:
-                legal_actions.append(card.__str__)
+                #x = card.__str__()
+                #legal_actions.append(x)
+                legal_actions.append(card)
         
-        print(legal_actions)
+        #print('hi', legal_actions)
         return legal_actions
 
     def get_state(self, players, player_id):
