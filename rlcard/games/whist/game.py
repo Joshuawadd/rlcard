@@ -78,6 +78,9 @@ class WhistGame(Game):
             (list): Each entry corresponds to the payoff of one player
         '''
         winner = self.round.winner
+        tricks = []
+        for player in self.players:
+            tricks.append(player.tricks)
         self.payoffs[winner] = 1
         for i in range(0,self.num_players):
             if i != winner:
@@ -104,6 +107,7 @@ class WhistGame(Game):
         state = self.round.get_state(self.players, player_id)
         state['player_num'] = self.get_player_num()
         state['current_player'] = self.round.current_player
+        state['trump_suit'] = self.trump_suit
         return state
 
     def get_legal_actions(self):
@@ -113,33 +117,33 @@ class WhistGame(Game):
             (list): A list of legal actions
         '''
 
-        return self.round.get_legal_actions(self.players, self.round.current_player, self.round.lead_player, self.round.lead_suit)
+        return self.round.get_legal_actions(self.players, self.round.current_player, self.round.lead_player, self.round.lead_card)
 
     def is_over(self):
         ''' Return whether the current game is over
         '''
         return self.round.is_over
 
-# For test
-if __name__ == '__main__':
-   #import time
-   #random.seed(0)
-   #start = time.time()
-   game = WhistGame()
-   for _ in range(1):
-       state, button = game.init_game()
-       print(button, str(state))
-       i = 0
-       while not game.is_over():
-            i += 1
-            legal_actions = game.get_legal_actions()
-            print('legal_actions', legal_actions)
-            # for actions in legal_actions:
-            #     print(actions)
-            action = np.random.choice(legal_actions)
-            print('action', action)
-            print()
-            state, button = game.step(action)
-            print(button, state)
-       print(game.get_payoffs())
-   print('step', i)
+# # For test
+# if __name__ == '__main__':
+#    #import time
+#    #random.seed(0)
+#    #start = time.time()
+#    game = WhistGame()
+#    for _ in range(1):
+#        state, button = game.init_game()
+#        print(button, str(state))
+#        i = 0
+#        while not game.is_over():
+#             i += 1
+#             legal_actions = game.get_legal_actions()
+#             print('legal_actions', legal_actions)
+#             # for actions in legal_actions:
+#             #     print(actions)
+#             action = np.random.choice(legal_actions)
+#             print('action', action)
+#             print()
+#             state, button = game.step(action)
+#             print(button, state)
+#        print(game.get_payoffs())
+#    print('step', i)

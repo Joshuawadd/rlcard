@@ -1,5 +1,6 @@
-from rlcard.core import Round
+from rlcard.core import Round, Card
 from rlcard.utils.utils import init_standard_deck, elegent_form
+from rlcard.games.whist.utils import cards2list
 import numpy as np
 
 class WhistRound(Round):
@@ -18,14 +19,14 @@ class WhistRound(Round):
         self.is_over = False
         self.winner = None
         self.lead_player = 0
-        self.lead_suit = None
+        self.lead_card = None
         self.round_winner = None
         self.judger = judger
         self.trump_suit = trump_suit
 
     def start_new_round (self, players):
 
-        winning_card = self.judger.judge_round(self.trump_suit, self.lead_suit, self.played_cards)
+        winning_card = self.judger.judge_round(self.trump_suit, self.lead_card.suit, self.played_cards)
         self.round_winner = (self.current_player + winning_card) % self.num_players
         players[self.round_winner].tricks +=1
         self.old_cards.append(self.played_cards)
@@ -43,30 +44,36 @@ class WhistRound(Round):
 
         player = players[self.current_player]
         #print(action)
-        suit = action.suit
-        rank = action.rank
+        suit = action[1]
+        rank = action[0]
 
         # for actions in player.hand:
         #        print(actions)
 
         for index, card in enumerate(player.hand):
-                if suit == card.suit and rank == card.rank:
-                    remove_index = index
-                    break
+            if suit == card.suit and rank == card.rank:
+                remove_index = index
+                break
 
         card = player.hand.pop(remove_index)
         self.played_cards.append(card)
+        #print(player.get_player_id(), self.lead_player)
+        if player.get_player_id() == self.lead_player:    
+            self.lead_card = card
         self.current_player = (self.current_player + 1) % self.num_players
-        print("current player", self.current_player, self.lead_player)
+        #print("current player", self.current_player, self.lead_player)
         if self.current_player == self.lead_player:
             self.start_new_round(players)
 
 
-    def get_legal_actions(self, players, player_id, lead_player, lead_suit):
+    def get_legal_actions(self, players, player_id, lead_player, lead_card):
         legal_actions = []
         wild_4_actions = []
         hand = players[player_id].hand
         target = self.target
+        #print(lead_card)
+        if lead_card:
+            lead_suit = lead_card.suit
         lead_suit_cards = []
 
         if player_id == lead_player:
@@ -80,7 +87,7 @@ class WhistRound(Round):
                 if card.suit == lead_suit:
                     #x = card.__str__()
                     #legal_actions.append(x)
-                    legal_actions.append(card)
+                    lead_suit_cards.append(card)
         if not lead_suit_cards:
             for card in hand:
                 #x = card.__str__()
@@ -93,7 +100,7 @@ class WhistRound(Round):
                 legal_actions.append(card)
         
         #print('hi', legal_actions)
-        return legal_actions
+        return cards2list(legal_actions)
 
     def get_state(self, players, player_id):
         ''' Get player's state
@@ -104,15 +111,21 @@ class WhistRound(Round):
         '''
         state = {}
         player = players[player_id]
-        state['hand'] = player.hand
-        state['played_cards'] = self.played_cards
+        state['hand'] = cards2list(player.hand)
+        state['played_cards'] = cards2list(self.played_cards)
+        state['old_cards'] = cards2list(self.old_cards)
         others_hand = []
         for player in players:
             if player.player_id != player_id:
                 others_hand.extend(player.hand)
-        state['others_hand'] = others_hand
-        state['legal_actions'] = self.get_legal_actions(players, player_id, self.lead_player, self.lead_suit)
+        state['others_hand'] = cards2list(others_hand)
+        state['legal_actions'] = self.get_legal_actions(players, player_id, self.lead_player, self.lead_card)
         state['card_num'] = []
         for player in players:
             state['card_num'].append(len(player.hand))
+        if self.lead_card:
+            state['lead_card'] = self.lead_card.__str__()
+        else:
+            state['lead_card'] = self.lead_card
+        state['lead_player'] = self.lead_player
         return state

@@ -28,12 +28,14 @@ class WhistJudger(Judger):
 
     def judge_game(self, players):
         winner = None
+        start = True
         for player in players:
-            if not winner:
-                winner = players.index(player)
+            if start:
+                winner = player.player_id
+                start = False
             else:
                 if player.tricks > players[winner].tricks:
                     
-                    winner = players.index(player)
+                    winner = player.player_id
         
         return winner
