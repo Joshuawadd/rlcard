@@ -17,7 +17,7 @@ eval_env = rlcard.make('whist', config={'seed': 0})
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 100
 evaluate_num = 1000
-episode_num = 10000
+episode_num = 100000
 
 # The intial memory size
 memory_init_size = 1000
@@ -45,11 +45,11 @@ with tf.Session() as sess:
                      train_every=train_every,
                      state_shape=env.state_shape,
                      mlp_layers=[512,512])
-    agent_0 = RandomAgent(action_num=eval_env.action_num)
-    agent_1 = RandomAgent(action_num=eval_env.action_num)
-    agent_2 = RandomAgent(action_num=eval_env.action_num)
-    env.set_agents([agent, agent_0, agent_1, agent_2])
-    eval_env.set_agents([agent, agent_0, agent_1, agent_2])
+    #agent_0 = RandomAgent(action_num=eval_env.action_num)
+    #agent_1 = RandomAgent(action_num=eval_env.action_num)
+    #agent_2 = RandomAgent(action_num=eval_env.action_num)
+    env.set_agents([agent, agent, agent, agent])
+    eval_env.set_agents([agent, agent, agent, agent])
 
     # Initialize global variables
     sess.run(tf.global_variables_initializer())
@@ -63,8 +63,9 @@ with tf.Session() as sess:
         trajectories, _ = env.run(is_training=True)
 
         # Feed transitions into agent memory, and train the agent
-        for ts in trajectories[0]:
-            agent.feed(ts)
+        for trajectory in trajectories:
+            for ts in trajectory:
+                agent.feed(ts)
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:

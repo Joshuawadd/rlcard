@@ -58,7 +58,13 @@ class WhistEnv(Env):
         state['played_cards'] = cards2list(self.game.round.played_cards)
         state['target'] = self.game.round.target.str
         state['current_player'] = self.game.round.current_player
+        state['trump_suit'] = self.game.trump_suit
         state['legal_actions'] = self.game.round.get_legal_actions(
             self.game.players, state['current_player'])
+        if self.game.round.lead_card:
+            state['lead_card'] = self.game.round.lead_card.__str__()
+        else:
+            state['lead_card'] = self.game.round.lead_card
+        state['lead_player'] = self.game.round.lead_player
         return state    
     

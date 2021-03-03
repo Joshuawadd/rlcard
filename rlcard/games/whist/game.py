@@ -81,10 +81,10 @@ class WhistGame(Game):
         tricks = []
         for player in self.players:
             tricks.append(player.tricks)
-        self.payoffs[winner] = 1
         for i in range(0,self.num_players):
-            if i != winner:
-                self.payoffs[i] = -1
+            tricks_lost = 13 - tricks[i]
+            self.payoffs[i] = tricks[i]*3 - tricks_lost
+            #print(tricks[i], self.payoffs[i])
         return self.payoffs
 
     def get_player_num(self):

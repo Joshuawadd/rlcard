@@ -30,6 +30,16 @@ class WhistRound(Round):
         self.round_winner = (self.current_player + winning_card) % self.num_players
         players[self.round_winner].tricks +=1
         self.old_cards.append(self.played_cards)
+        # print("")
+        # print("Player 0 hand:", cards2list(players[0].hand))
+        # print("Player 1 hand:", cards2list(players[1].hand))
+        # print("Player 2 hand:", cards2list(players[2].hand))
+        # print("Player 3 hand:", cards2list(players[3].hand))
+        # print("Lead player:", self.lead_player)
+        # print("Trump Suit:", self.trump_suit)
+        # print("Played Cards:", cards2list(self.played_cards))
+        # print("Winner:", self.round_winner, "Winning card:", winning_card)
+        # print("Score:", players[0].tricks, players[1].tricks, players[2].tricks, players[3].tricks)
         self.played_cards = []
         self.current_player = self.round_winner
         self.lead_player =  self.current_player
