@@ -1,0 +1,4 @@
+
+
+########## Evaluation 0 ##########
+Timestep: 136 Average reward is -0.502, reward2 is -0.5267999999999998
