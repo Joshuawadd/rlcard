@@ -24,7 +24,7 @@ class WhistJudger(Judger):
                     if rank2int(card.rank) > rank2int(winning_card.rank):
                         winning_card = card
 
-        return played_cards.index(winning_card)
+        return played_cards.index(winning_card), winning_card
 
     def judge_game(self, players):
         winner = None

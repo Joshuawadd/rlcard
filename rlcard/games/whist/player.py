@@ -7,6 +7,7 @@ class WhistPlayer(Player):
         self.hand = []
         self.tricks = 0
         self.player_id = player_id
+        self.empty_suits = []
     
     def get_player_id(self):
         ''' Return the id of the player

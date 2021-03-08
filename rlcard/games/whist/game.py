@@ -83,7 +83,7 @@ class WhistGame(Game):
             tricks.append(player.tricks)
         for i in range(0,self.num_players):
             tricks_lost = 13 - tricks[i]
-            self.payoffs[i] = tricks[i]*3 - tricks_lost
+            self.payoffs[i] = tricks[i] - tricks_lost
             #print(tricks[i], self.payoffs[i])
         return self.payoffs
 

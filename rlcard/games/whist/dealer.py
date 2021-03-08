@@ -8,6 +8,7 @@ class WhistDealer(Dealer):
 
         self.np_random = np_random
         self.deck = init_standard_deck()
+        self.start_deck = self.deck
         self.shuffle()
         self.pot = 0
     

@@ -133,6 +133,7 @@ class DQNAgent(object):
         A = self.predict(state['obs'])
         A = remove_illegal(A, state['legal_actions'])
         action = np.random.choice(np.arange(len(A)), p=A)
+        #print(action)
         return action
 
     def eval_step(self, state):

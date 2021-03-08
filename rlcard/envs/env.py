@@ -1,4 +1,6 @@
 from rlcard.utils import *
+from rlcard.games.whist.utils import cards2list
+import os
 
 class Env(object):
     '''
@@ -204,6 +206,7 @@ class Env(object):
             # Set the state and player
             state = next_state
             player_id = next_player_id
+            
 
             # Save state.
             if not self.game.is_over():
@@ -216,11 +219,109 @@ class Env(object):
 
         # Payoffs
         payoffs = self.get_payoffs()
+        #print("start")
+        #print(trajectories)
+        #print()
 
         # Reorganize the trajectories
         trajectories = reorganize(trajectories, payoffs)
 
+        
+
         return trajectories, payoffs
+
+    def run_example(self, is_training=False):
+        '''
+        Run a complete game, either for evaluation or training RL agent.
+
+        Args:
+            is_training (boolean): True if for training purpose.
+
+        Returns:
+            (tuple) Tuple containing:
+
+                (list): A list of trajectories generated from the environment.
+                (list): A list payoffs. Each entry corresponds to one player.
+
+        Note: The trajectories are 3-dimension list. The first dimension is for different players.
+              The second dimension is for different transitions. The third dimension is for the contents of each transiton
+        '''
+        if self.single_agent_mode:
+            raise ValueError('Run in single agent not allowed.')
+
+        trajectories = [[] for _ in range(self.player_num)]
+        state, player_id = self.reset()
+
+        # Loop to play the game
+        trajectories[player_id].append(state)
+        i = 1
+        while not self.is_over():
+            # Agent plays
+            if not is_training:
+                action, _ = self.agents[player_id].eval_step(state)
+            else:
+                action = self.agents[player_id].step(state)
+
+            # Environment steps
+            next_state, next_player_id = self.step(action, self.agents[player_id].use_raw)
+            # Save action
+            trajectories[player_id].append(action)
+
+            if i%4 == 0:
+
+                # print("")
+                # print("Player 0 hand:", cards2list(self.game.players[0].hand))
+                # print("Player 1 hand:", cards2list(self.game.players[1].hand))
+                # print("Player 2 hand:", cards2list(self.game.players[2].hand))
+                # print("Player 3 hand:", cards2list(self.game.players[3].hand))
+                # print("Lead player:", self.game.round.lead_player)
+                # print("Trump Suit:", self.game.trump_suit)
+                # print("Playing Card:", self.game.round.played_card)
+                # print("Played Cards:", cards2list(self.game.round.played_cards))
+                # print("Winner:", self.game.round.round_winner, "Winning card:", self.game.round.played_cards[self.game.round.winning_card])
+                # print("Score:", self.game.players[0].tricks, self.game.players[1].tricks, self.game.players[2].tricks, self.game.players[3].tricks)
+
+                with open("./experiments/whist_dqn_result/game_log.txt", "a") as file_object:
+                    file_object.write("\n")
+                    file_object.write("Player 0 hand: " + str(cards2list(self.game.players[0].hand)) + "\n")
+                    file_object.write("Player 1 hand: " + str(cards2list(self.game.players[1].hand)) + "\n")
+                    file_object.write("Player 2 hand: " + str(cards2list(self.game.players[2].hand)) + "\n")
+                    file_object.write("Player 3 hand: " + str(cards2list(self.game.players[3].hand)) + "\n")
+                    file_object.write("Lead player: " + str(self.game.round.last_lead) + "\n")
+                    file_object.write("Trump Suit: " + self.game.trump_suit + "\n")
+                    #file_object.write("Playing Card: " + self.game.round.played_card.__str__() + "\n")
+                    file_object.write("Played Cards: " + str(cards2list(self.game.round.round_cards)) + "\n")
+                    file_object.write("Winner: " + str(self.game.round.round_winner) + " Winning card: " + self.game.round.winning_card.__str__() + "\n")
+                    file_object.write("Score: " + str(self.game.players[0].tricks) + " " + str(self.game.players[1].tricks) + " " + str(self.game.players[2].tricks) + " " + str(self.game.players[3].tricks) + "\n")
+
+            # Set the state and player
+            state = next_state
+            player_id = next_player_id
+
+                       
+
+            # Save state.
+            if not self.game.is_over():
+                trajectories[player_id].append(state)
+
+            i+=1
+
+        # Add a final state to all the players
+        for player_id in range(self.player_num):
+            state = self.get_state(player_id)
+            trajectories[player_id].append(state)
+
+        # Payoffs
+        payoffs = self.get_payoffs()
+        #print("start")
+        #print(trajectories[0][0])
+
+        # Reorganize the trajectories
+        trajectories = reorganize(trajectories, payoffs)
+
+        
+
+        #return trajectories, payoffs
 
     def is_over(self):
         ''' Check whether the curent game is over

@@ -11,7 +11,7 @@ class WhistEnv(Env):
         self.name = 'whist'
         self.game = Game()
         super().__init__(config)
-        self.state_shape = [3, 4, 13]
+        self.state_shape = [5, 4, 13]
 
     def _get_legal_actions(self):
         legal_actions = self.game.get_legal_actions()
@@ -23,10 +23,12 @@ class WhistEnv(Env):
         return np.array(self.game.get_payoffs())
 
     def _extract_state(self, state):
-        obs = np.zeros((3, 4, 13), dtype=int)
+        obs = np.zeros((5, 4, 13), dtype=int)
         encode_hand(obs[0], state['hand'])
         encode_target(obs[1], state['lead_card'])
-        encode_hand(obs[2], state['others_hand'])
+        encode_hand(obs[2], state['others_hand_0'])
+        encode_hand(obs[3], state['others_hand_1'])
+        encode_hand(obs[4], state['others_hand_2'])
         legal_action_id = self._get_legal_actions()
         extracted_state = {'obs': obs, 'legal_actions': legal_action_id}
         if self.allow_raw_data:
