@@ -6,15 +6,20 @@ from rlcard.agents import NFSPAgent
 from rlcard.agents import RandomAgent
 from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
+from tqdm import tqdm
+
+import time
 
 # Make environment
 env = rlcard.make('whist', config={'seed': 0})
 eval_env = rlcard.make('whist', config={'seed': 0})
 
+start = time.time()
+
 # Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 100
-evaluate_num = 1000
-episode_num = 10000
+evaluate_every = 1000
+evaluate_num = 200
+episode_num = 60000
 
 # The intial memory size
 memory_init_size = 1000
@@ -60,7 +65,7 @@ with tf.Session() as sess:
     random_agent_2 = RandomAgent(action_num=eval_env.action_num)
 
     env.set_agents(agents)
-    eval_env.set_agents([agents[0], random_agent_0, random_agent_1, random_agent_2])
+    eval_env.set_agents([agents[0], random_agent_0, agents[2], random_agent_2])
 
     # Initialize global variables
     sess.run(tf.global_variables_initializer())
@@ -69,7 +74,12 @@ with tf.Session() as sess:
 
     logger = Logger(log_dir)
 
-    for episode in range(episode_num):
+    file = open("./experiments/whist_nfsp_result/game_log.txt","w")
+    file.close()
+
+    eval_env.run_example(is_training=False, is_dqn=False)
+
+    for episode in tqdm(range(episode_num)):
 
         # First sample a policy for the episode
         for agent in agents:
@@ -86,6 +96,18 @@ with tf.Session() as sess:
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
             logger.log_performance(env.timestep, tournament(eval_env, evaluate_num)[0])
+
+        if episode % (evaluate_every*10) == 0:
+            if episode != 0:
+                current_time = (time.time() - start)/60
+                time_left = (episode_num - episode)/(episode/current_time)
+                print()
+                print(episode, current_time, episode/current_time)
+                print("Time left:", time_left)
+                print()
+                dqn = False
+                eval_env.run_example(is_training=False, is_dqn=False)
+
 
     # Close files in the logger
     logger.close_files()
