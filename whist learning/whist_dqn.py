@@ -10,6 +10,7 @@ from rlcard.agents import RandomAgent
 from rlcard.utils.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 from tqdm import tqdm
+import plot
 
 import time
 
@@ -25,7 +26,7 @@ start = time.time()
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 1000
 evaluate_num = 200
-episode_num = 300000
+episode_num = 200000
 
 # The intial memory size
 memory_init_size = 1000
@@ -33,8 +34,10 @@ memory_init_size = 1000
 # Train the agent every X steps
 train_every = 1
 
+timestr = time.strftime("%Y%m%d-%H%M%S")
+
 # The paths for saving the logs and learning curves
-log_dir = './experiments/whist_dqn_result/'
+log_dir = './experiments/whist_dqn_result/' + timestr +'/'
 
 # Set a global seed
 set_global_seed(0)
@@ -45,19 +48,35 @@ with tf.Session() as sess:
     global_step = tf.Variable(0, name='global_step', trainable=False)
 
     # Set up the agents
-    agent = DQNAgent(sess,
-                     scope='dqn',
-                     action_num=env.action_num,
-                     replay_memory_size=20000,
-                     replay_memory_init_size=memory_init_size,
-                     train_every=train_every,
-                     state_shape=env.state_shape,
-                     mlp_layers=[512, 512])
-    agent_0 = RandomAgent(action_num=eval_env.action_num)
-    agent_1 = RandomAgent(action_num=eval_env.action_num)
-    agent_2 = RandomAgent(action_num=eval_env.action_num)
+    agents = []
+    # for i in range(env.player_num):
+    #     agent = DQNAgent(sess,
+    #                     scope='dqn' + str(i),
+    #                     action_num=env.action_num,
+    #                     replay_memory_size=20000,
+    #                     replay_memory_init_size=memory_init_size,
+    #                     train_every=train_every,
+    #                     state_shape=env.state_shape,
+    #                     mlp_layers=[512, 512])
+    #     agents.append(agent)
 
-    #env.set_agents([agent, agent_0, agent_1, agent_2])
+    agent = DQNAgent(sess,
+                    scope='dqn',
+                    action_num=env.action_num,
+                    replay_memory_size=20000,
+                    replay_memory_init_size=memory_init_size,
+                    train_every=train_every,
+                    state_shape=env.state_shape,
+                    mlp_layers=[512, 512])
+    
+    random_agent_0 = RandomAgent(action_num=eval_env.action_num)
+    random_agent_1 = RandomAgent(action_num=eval_env.action_num)
+    #random_agent_2 = RandomAgent(action_num=eval_env.action_num)
+
+    # env.set_agents(agents)
+    # eval_env.set_agents([agents[0], random_agent_0, agents[2], random_agent_1])
+
+    # env.set_agents([agent, agent_0, agent_1, agent_2])
     eval_env.set_agents([agent, agent_0, agent, agent_1])
 
     env.set_agents([agent, agent, agent, agent])
@@ -69,10 +88,12 @@ with tf.Session() as sess:
     # Init a Logger to plot the learning curve
     logger = Logger(log_dir)
 
-    file = open("./experiments/whist_dqn_result/game_log.txt","w")
+    game_log_dir = log_dir + 'game_log.txt'
+
+    file = open(game_log_dir,"w")
     file.close()
 
-    eval_env.run_example(is_training=False, is_dqn=True)
+    eval_env.run_example(game_log_dir, is_training=False)
 
     for episode in tqdm(range(episode_num)):
 
@@ -84,14 +105,25 @@ with tf.Session() as sess:
         #     for ts in trajectory:
         #         agent.feed(ts)
 
-        for ts in trajectories[0]:
-            #print(ts)
-            agent.feed(ts)
+        for i in range(env.player_num):
+            for ts in trajectories[i]:
+                agent.feed(ts)
+
+        # for ts in trajectories[0]:
+        #     #print(ts)
+        #     agent.feed(ts)
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
+            reward, win_rate = tournament(eval_env, evaluate_num)
+            print(win_rate)
             logger.log_performance(
-                env.timestep, tournament(eval_env, evaluate_num)[0])
+                env.timestep, reward[0], win_rate)
+
+        if episode % 1000 == 0:
+            logger.close_files()
+            logger.plot('DQN')
+            plot.dot_plot(timestr)
         
         if episode % (1000) == 0:
             if episode != 0:
@@ -101,7 +133,7 @@ with tf.Session() as sess:
                 print(episode, current_time, episode/current_time)
                 print("Time left:", time_left)
                 print()
-                eval_env.run_example(is_training=False, is_dqn=True)
+                eval_env.run_example(game_log_dir, is_training=False)
 
     # Close files in the logger
     logger.close_files()
