@@ -110,16 +110,16 @@ class WhistRound(Round):
                     #x = card.__str__()
                     #legal_actions.append(x)
                     lead_suit_cards.append(card)
-        if not lead_suit_cards:
-            for card in hand:
-                #x = card.__str__()
-                #legal_actions.append(x)
-                legal_actions.append(card)
-        else:
-            for card in lead_suit_cards:
-                #x = card.__str__()
-                #legal_actions.append(x)
-                legal_actions.append(card)
+            if not lead_suit_cards:
+                for card in hand:
+                    #x = card.__str__()
+                    #legal_actions.append(x)
+                    legal_actions.append(card)
+            else:
+                for card in lead_suit_cards:
+                    #x = card.__str__()
+                    #legal_actions.append(x)
+                    legal_actions.append(card)
         
         #print('hi', legal_actions)
         return cards2list(legal_actions)
@@ -136,11 +136,13 @@ class WhistRound(Round):
         state['hand'] = cards2list(player.hand)
         state['played_cards'] = cards2list(self.played_cards)
         state['old_cards'] = cards2list(self.old_cards)
+        
+
 
         others_hand = [[],[],[]]
-        for player in players:
-            i=0
-            if player.player_id != player_id:
+        i=0
+        for other_player in players:            
+            if other_player.player_id != player_id:
                 possible_cards = init_standard_deck()
                 for card in player.hand:
                     possible_cards.remove(card)
@@ -149,7 +151,7 @@ class WhistRound(Round):
                 for card in self.old_cards:
                     possible_cards.remove(card)
                 for card in possible_cards:
-                    if card.suit in player.empty_suits:
+                    if card.suit in other_player.empty_suits:
                         possible_cards.remove(card)
                 others_hand[i].extend(possible_cards)
                 i+=1
@@ -160,6 +162,8 @@ class WhistRound(Round):
         state['others_hand_1'] = cards2list(others_hand[1])
         state['others_hand_2'] = cards2list(others_hand[2])
 
+        state['player_position'] = len(self.played_cards)
+
         # others_hand = []
         # for player in players:
         #     if player.player_id != player_id:
@@ -167,8 +171,10 @@ class WhistRound(Round):
         # state['others_hand'] = cards2list(others_hand)
         state['legal_actions'] = self.get_legal_actions(players, player_id, self.lead_player, self.lead_card)
         state['card_num'] = []
+        state['score'] = []
         for player in players:
             state['card_num'].append(len(player.hand))
+            state['score'].append(player.tricks)
         if self.lead_card:
             state['lead_card'] = self.lead_card.__str__()
         else:

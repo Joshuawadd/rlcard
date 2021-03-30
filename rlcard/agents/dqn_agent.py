@@ -336,6 +336,7 @@ class Memory(object):
             next_state (numpy.array): the next state after performing the action
             done (boolean): whether the episode is finished
         '''
+        #print(len(self.memory))
         if len(self.memory) == self.memory_size:
             self.memory.pop(0)
         transition = Transition(state, action, reward, next_state, done)

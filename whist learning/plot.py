@@ -34,6 +34,7 @@ def dot_plot(log_dir):
             os.makedirs(save_dir)
 
         fig.savefig(save_path)
+        plt.close(fig)
 
     with open(win_csv_path) as csvfile:
         #print(win_csv_path)
@@ -54,3 +55,4 @@ def dot_plot(log_dir):
             os.makedirs(save_dir)
 
         fig.savefig(save_path_win)
+        plt.close(fig)

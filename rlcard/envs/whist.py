@@ -25,18 +25,20 @@ class WhistEnv(Env):
     def _extract_state(self, state):
         obs = np.zeros((5, 4, 13), dtype=int)
         encode_hand(obs[0], state['hand'])
-        encode_target(obs[1], state['lead_card'])
+        encode_hand(obs[1], state['played_cards'])
         encode_hand(obs[2], state['others_hand_0'])
         encode_hand(obs[3], state['others_hand_1'])
         encode_hand(obs[4], state['others_hand_2'])
         legal_action_id = self._get_legal_actions()
         extracted_state = {'obs': obs, 'legal_actions': legal_action_id}
+        #print(self.allow_raw_data)
         if self.allow_raw_data:
             extracted_state['raw_obs'] = state
             extracted_state['raw_legal_actions'] = [
                 a for a in state['legal_actions']]
         if self.record_action:
             extracted_state['action_record'] = self.action_recorder
+        #print(extracted_state)
         return extracted_state
 
     def _decode_action(self, action_id):

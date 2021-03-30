@@ -25,14 +25,14 @@ start = time.time()
 
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 1000
-evaluate_num = 200
-episode_num = 200000
+evaluate_num = 2000
+episode_num = 400000
 
 # The intial memory size
 memory_init_size = 1000
 
 # Train the agent every X steps
-train_every = 1
+train_every = 2
 
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
@@ -49,37 +49,39 @@ with tf.Session() as sess:
 
     # Set up the agents
     agents = []
-    # for i in range(env.player_num):
-    #     agent = DQNAgent(sess,
-    #                     scope='dqn' + str(i),
-    #                     action_num=env.action_num,
-    #                     replay_memory_size=20000,
-    #                     replay_memory_init_size=memory_init_size,
-    #                     train_every=train_every,
-    #                     state_shape=env.state_shape,
-    #                     mlp_layers=[512, 512])
-    #     agents.append(agent)
+    for i in range(4):
+        agent = DQNAgent(sess,
+                        scope='dqn' + str(i),
+                        action_num=env.action_num,
+                        replay_memory_size=20000,
+                        replay_memory_init_size=memory_init_size,
+                        train_every=train_every,
+                        state_shape=env.state_shape,
+                        mlp_layers=[512, 512],
+                        learning_rate=0.0001)
+        agents.append(agent)
 
-    agent = DQNAgent(sess,
-                    scope='dqn',
-                    action_num=env.action_num,
-                    replay_memory_size=20000,
-                    replay_memory_init_size=memory_init_size,
-                    train_every=train_every,
-                    state_shape=env.state_shape,
-                    mlp_layers=[512, 512])
+    # agent = DQNAgent(sess,
+    #                 scope='dqn',
+    #                 action_num=env.action_num,
+    #                 replay_memory_size=20000,
+    #                 replay_memory_init_size=memory_init_size,
+    #                 train_every=train_every,
+    #                 state_shape=env.state_shape,
+    #                 mlp_layers=[512, 512])
     
     random_agent_0 = RandomAgent(action_num=eval_env.action_num)
     random_agent_1 = RandomAgent(action_num=eval_env.action_num)
     #random_agent_2 = RandomAgent(action_num=eval_env.action_num)
 
-    # env.set_agents(agents)
-    # eval_env.set_agents([agents[0], random_agent_0, agents[2], random_agent_1])
+    #env.set_agents([agents[0], agents[0], agents[1], agents[1]])
+    env.set_agents(agents)
+    eval_env.set_agents([agents[0], random_agent_0, agents[2], random_agent_1])
 
     # env.set_agents([agent, agent_0, agent_1, agent_2])
-    eval_env.set_agents([agent, agent_0, agent, agent_1])
+    # eval_env.set_agents([agent, random_agent_0, agent, random_agent_1])
 
-    env.set_agents([agent, agent, agent, agent])
+    # env.set_agents([agent, agent, agent, agent])
     # eval_env.set_agents([agent, agent, agent, agent])
 
     # Initialize global variables
@@ -107,7 +109,14 @@ with tf.Session() as sess:
 
         for i in range(env.player_num):
             for ts in trajectories[i]:
-                agent.feed(ts)
+                agents[i].feed(ts)
+
+        # j=0
+        # for i in range(env.player_num):
+        #     for ts in trajectories[i]:
+        #         agents[j].feed(ts)
+        #     if i%2 == 1:
+        #         j+=1
 
         # for ts in trajectories[0]:
         #     #print(ts)
@@ -116,7 +125,7 @@ with tf.Session() as sess:
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
             reward, win_rate = tournament(eval_env, evaluate_num)
-            print(win_rate)
+            #print(win_rate)
             logger.log_performance(
                 env.timestep, reward[0], win_rate)
 
@@ -134,6 +143,9 @@ with tf.Session() as sess:
                 print("Time left:", time_left)
                 print()
                 eval_env.run_example(game_log_dir, is_training=False)
+
+        # if episode % 1000 == 0:
+        #     tf.reset_default_graph()
 
     # Close files in the logger
     logger.close_files()

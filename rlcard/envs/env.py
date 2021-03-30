@@ -230,7 +230,7 @@ class Env(object):
 
         return trajectories, payoffs
 
-    def run_example(self, is_training=False):
+    def run_example(self, log_location, is_training=False):
         '''
         Run a complete game, either for evaluation or training RL agent.
 
@@ -267,6 +267,7 @@ class Env(object):
             # Save action
             trajectories[player_id].append(action)
 
+
             if i%4 == 0:
 
                 # print("")
@@ -281,7 +282,7 @@ class Env(object):
                 # print("Winner:", self.game.round.round_winner, "Winning card:", self.game.round.played_cards[self.game.round.winning_card])
                 # print("Score:", self.game.players[0].tricks, self.game.players[1].tricks, self.game.players[2].tricks, self.game.players[3].tricks)
 
-                with open("./experiments/whist_dqn_result/game_log.txt", "a") as file_object:
+                with open(log_location, "a") as file_object:
                     file_object.write("\n")
                     file_object.write("Player 0 hand: " + str(cards2list(self.game.players[0].hand)) + "\n")
                     file_object.write("Player 1 hand: " + str(cards2list(self.game.players[1].hand)) + "\n")

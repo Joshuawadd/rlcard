@@ -387,18 +387,31 @@ def tournament(env, num):
     '''
     payoffs = [0 for _ in range(env.player_num)]
     counter = 0
+    win_num = 0
     while counter < num:
         _, _payoffs = env.run(is_training=False)
         if isinstance(_payoffs, list):
             for _p in _payoffs:
                 for i, _ in enumerate(payoffs):
                     payoffs[i] += _p[i]
+                    #print(i, _p[i])
+                    #print(i, _payoffs[i])
+                    if i == 0 & _p[i] > 0:
+                        win_num +=1
                 counter += 1
         else:
             for i, _ in enumerate(payoffs):
-                payoffs[i] += _payoffs[i]
+                payoffs[i] += _payoffs[i]                
+                if i == 0 and _payoffs[i] > 0:
+                    #print(i, _payoffs[i])
+                    win_num +=1
             counter += 1
+    #print(payoffs)
     for i, _ in enumerate(payoffs):
         payoffs[i] /= counter
-    return payoffs
+    #print(win_num)
+    win_num = win_num/num
+    #print(num)
+    #print(win_num)
+    return payoffs, win_num
 
