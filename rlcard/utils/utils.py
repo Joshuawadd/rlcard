@@ -463,7 +463,7 @@ def tournament(env, num):
     for i, _ in enumerate(payoffs):
         payoffs[i] /= counter
     # print(win_num)
-    win_num = win_num/num
+    #win_num = win_num/num
     # print()
     # print(max(difficulty_list))
     # print(min(difficulty_list))
@@ -475,7 +475,7 @@ def tournament(env, num):
     # print("Hard: ", num_hard, " Win num: ",
     #       win_num_hard, " Rate: ", win_num_hard/num_hard)
 
-    win_num_list = [win_num, win_num_easy/num_easy, win_num_medium/num_medium, win_num_hard/num_hard]
+    win_num_list = [win_num/num, win_num_easy/num_easy, win_num_medium/num_medium, win_num_hard/num_hard]
     # print(num)
     # print(win_num)
     return payoffs, win_num_list

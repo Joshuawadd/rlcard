@@ -194,6 +194,8 @@ class Env(object):
 
         player_hand = [0, 0, 0, 0]
 
+        difficulty = 0
+
         #print(self.game.trump_suit)
 
         if not is_training:
@@ -228,10 +230,10 @@ class Env(object):
                             player_hand[player_id] += int(card.rank)
         #print(player_hand)
 
-        score_1 = max(player_hand[0], player_hand[2])
-        score_2 = max(player_hand[1], player_hand[3])
+            score_1 = max(player_hand[0], player_hand[2])
+            score_2 = max(player_hand[1], player_hand[3])
 
-        difficulty = score_1 - score_2
+            difficulty = score_1 - score_2
 
         # Loop to play the game
         trajectories[player_id].append(state)
