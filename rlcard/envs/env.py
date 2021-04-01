@@ -2,6 +2,7 @@ from rlcard.utils import *
 from rlcard.games.whist.utils import cards2list
 import os
 
+
 class Env(object):
     '''
     The base Env class. For all the environments in RLCard,
@@ -78,7 +79,6 @@ class Env(object):
         # Set random seed, default is None
         self._seed(config['seed'])
 
-
     def reset(self):
         '''
         Reset environment in single-agent mode
@@ -91,7 +91,8 @@ class Env(object):
             state, player_id = self.game.init_game()
             while not player_id == self.active_player:
                 self.timestep += 1
-                action, _ = self.model.agents[player_id].eval_step(self._extract_state(state))
+                action, _ = self.model.agents[player_id].eval_step(
+                    self._extract_state(state))
                 if not self.model.agents[player_id].use_raw:
                     action = self._decode_action(action)
                 state, player_id = self.game.step(action)
@@ -139,7 +140,8 @@ class Env(object):
         Note: Error will be raised if step back from the root node.
         '''
         if not self.allow_step_back:
-            raise Exception('Step back is off. To use step_back, please set allow_step_back=True in rlcard.make')
+            raise Exception(
+                'Step back is off. To use step_back, please set allow_step_back=True in rlcard.make')
 
         if not self.game.step_back():
             return False
@@ -158,7 +160,8 @@ class Env(object):
             agents (list): List of Agent classes
         '''
         if self.single_agent_mode:
-            raise ValueError('Setting agent in single agent mode or human mode is not allowed.')
+            raise ValueError(
+                'Setting agent in single agent mode or human mode is not allowed.')
 
         self.agents = agents
         # If at least one agent needs raw data, we set self.allow_raw_data = True
@@ -189,24 +192,66 @@ class Env(object):
         trajectories = [[] for _ in range(self.player_num)]
         state, player_id = self.reset()
 
+        player_hand = [0, 0, 0, 0]
+
+        #print(self.game.trump_suit)
+
+        if not is_training:
+            for player_id in range(self.player_num):
+                #print(cards2list(self.game.players[player_id].hand))
+                for card in self.game.players[player_id].hand:
+                    if card.suit == self.game.trump_suit:
+                        if card.rank == 'A':
+                            player_hand[player_id] += 27
+                        elif card.rank == 'K':
+                            player_hand[player_id] += 26
+                        elif card.rank == 'Q':
+                            player_hand[player_id] += 25
+                        elif card.rank == 'J':
+                            player_hand[player_id] += 24
+                        elif card.rank == 'T':
+                            player_hand[player_id] += 23
+                        else:
+                            player_hand[player_id] += (int(card.rank) + 13)                           
+                    else:
+                        if card.rank == 'A':
+                            player_hand[player_id] += 14
+                        elif card.rank == 'K':
+                            player_hand[player_id] += 13
+                        elif card.rank == 'Q':
+                            player_hand[player_id] += 12
+                        elif card.rank == 'J':
+                            player_hand[player_id] += 11
+                        elif card.rank == 'T':
+                            player_hand[player_id] += 10
+                        else:
+                            player_hand[player_id] += int(card.rank)
+        #print(player_hand)
+
+        score_1 = max(player_hand[0], player_hand[2])
+        score_2 = max(player_hand[1], player_hand[3])
+
+        difficulty = score_1 - score_2
+
         # Loop to play the game
         trajectories[player_id].append(state)
         while not self.is_over():
             # Agent plays
             if not is_training:
-                action, _ = self.agents[player_id].eval_step(state)
+                action, _=self.agents[player_id].eval_step(state)
             else:
-                action = self.agents[player_id].step(state)
+                action=self.agents[player_id].step(state)
 
             # Environment steps
-            next_state, next_player_id = self.step(action, self.agents[player_id].use_raw)
+            next_state, next_player_id=self.step(
+                action, self.agents[player_id].use_raw)
             # Save action
             trajectories[player_id].append(action)
 
             # Set the state and player
-            state = next_state
-            player_id = next_player_id
-            
+            state=next_state
+            player_id=next_player_id
+
 
             # Save state.
             if not self.game.is_over():
@@ -214,21 +259,21 @@ class Env(object):
 
         # Add a final state to all the players
         for player_id in range(self.player_num):
-            state = self.get_state(player_id)
+            state=self.get_state(player_id)
             trajectories[player_id].append(state)
 
         # Payoffs
-        payoffs = self.get_payoffs()
-        #print("start")
-        #print(trajectories)
-        #print()
+        payoffs=self.get_payoffs()
+        # print("start")
+        # print(trajectories)
+        # print()
 
         # Reorganize the trajectories
-        trajectories = reorganize(trajectories, payoffs)
+        trajectories=reorganize(trajectories, payoffs)
 
-        
 
-        return trajectories, payoffs
+
+        return trajectories, payoffs, difficulty
 
     def run_example(self, log_location, is_training=False):
         '''
@@ -249,26 +294,66 @@ class Env(object):
         if self.single_agent_mode:
             raise ValueError('Run in single agent not allowed.')
 
-        trajectories = [[] for _ in range(self.player_num)]
-        state, player_id = self.reset()
+        trajectories=[[] for _ in range(self.player_num)]
+        state, player_id=self.reset()
+
+        player_hand = [0, 0, 0, 0]
+
+        if not is_training:
+            for player_id in range(self.player_num):
+                #print(cards2list(self.game.players[player_id].hand))
+                for card in self.game.players[player_id].hand:
+                    if card.suit == self.game.trump_suit:
+                        if card.rank == 'A':
+                            player_hand[player_id] += 27
+                        elif card.rank == 'K':
+                            player_hand[player_id] += 26
+                        elif card.rank == 'Q':
+                            player_hand[player_id] += 25
+                        elif card.rank == 'J':
+                            player_hand[player_id] += 24
+                        elif card.rank == 'T':
+                            player_hand[player_id] += 23
+                        else:
+                            player_hand[player_id] += (int(card.rank) + 13)                           
+                    else:
+                        if card.rank == 'A':
+                            player_hand[player_id] += 14
+                        elif card.rank == 'K':
+                            player_hand[player_id] += 13
+                        elif card.rank == 'Q':
+                            player_hand[player_id] += 12
+                        elif card.rank == 'J':
+                            player_hand[player_id] += 11
+                        elif card.rank == 'T':
+                            player_hand[player_id] += 10
+                        else:
+                            player_hand[player_id] += int(card.rank)
+        #print(player_hand)
+
+        score_1 = max(player_hand[0], player_hand[2])
+        score_2 = max(player_hand[1], player_hand[3])
+
+        difficulty = score_1 - score_2
 
         # Loop to play the game
         trajectories[player_id].append(state)
-        i = 1
+        i=1
         while not self.is_over():
             # Agent plays
             if not is_training:
-                action, _ = self.agents[player_id].eval_step(state)
+                action, _=self.agents[player_id].eval_step(state)
             else:
-                action = self.agents[player_id].step(state)
+                action=self.agents[player_id].step(state)
 
             # Environment steps
-            next_state, next_player_id = self.step(action, self.agents[player_id].use_raw)
+            next_state, next_player_id=self.step(
+                action, self.agents[player_id].use_raw)
             # Save action
             trajectories[player_id].append(action)
 
 
-            if i%4 == 0:
+            if i % 4 == 0:
 
                 # print("")
                 # print("Player 0 hand:", cards2list(self.game.players[0].hand))
@@ -284,45 +369,56 @@ class Env(object):
 
                 with open(log_location, "a") as file_object:
                     file_object.write("\n")
-                    file_object.write("Player 0 hand: " + str(cards2list(self.game.players[0].hand)) + "\n")
-                    file_object.write("Player 1 hand: " + str(cards2list(self.game.players[1].hand)) + "\n")
-                    file_object.write("Player 2 hand: " + str(cards2list(self.game.players[2].hand)) + "\n")
-                    file_object.write("Player 3 hand: " + str(cards2list(self.game.players[3].hand)) + "\n")
-                    file_object.write("Lead player: " + str(self.game.round.last_lead) + "\n")
-                    file_object.write("Trump Suit: " + self.game.trump_suit + "\n")
-                    #file_object.write("Playing Card: " + self.game.round.played_card.__str__() + "\n")
-                    file_object.write("Played Cards: " + str(cards2list(self.game.round.round_cards)) + "\n")
-                    file_object.write("Winner: " + str(self.game.round.round_winner) + " Winning card: " + self.game.round.winning_card.__str__() + "\n")
-                    file_object.write("Score: " + str(self.game.players[0].tricks) + " " + str(self.game.players[1].tricks) + " " + str(self.game.players[2].tricks) + " " + str(self.game.players[3].tricks) + "\n")
+                    file_object.write(
+                        "Difficulty: " + str(difficulty) + "\n")
+                    file_object.write(
+                        "Player 0 hand: " + str(cards2list(self.game.players[0].hand)) + "\n")
+                    file_object.write(
+                        "Player 1 hand: " + str(cards2list(self.game.players[1].hand)) + "\n")
+                    file_object.write(
+                        "Player 2 hand: " + str(cards2list(self.game.players[2].hand)) + "\n")
+                    file_object.write(
+                        "Player 3 hand: " + str(cards2list(self.game.players[3].hand)) + "\n")
+                    file_object.write("Lead player: " + \
+                                      str(self.game.round.last_lead) + "\n")
+                    file_object.write(
+                        "Trump Suit: " + self.game.trump_suit + "\n")
+                    # file_object.write("Playing Card: " + self.game.round.played_card.__str__() + "\n")
+                    file_object.write(
+                        "Played Cards: " + str(cards2list(self.game.round.round_cards)) + "\n")
+                    file_object.write("Winner: " + str(self.game.round.round_winner) + \
+                                      " Winning card: " + self.game.round.winning_card.__str__() + "\n")
+                    file_object.write("Score: " + str(self.game.players[0].tricks) + " " + str(self.game.players[1].tricks) + " " + str(
+                        self.game.players[2].tricks) + " " + str(self.game.players[3].tricks) + "\n")
 
             # Set the state and player
-            state = next_state
-            player_id = next_player_id
+            state=next_state
+            player_id=next_player_id
 
-                       
+
 
             # Save state.
             if not self.game.is_over():
                 trajectories[player_id].append(state)
 
-            i+=1
+            i += 1
 
         # Add a final state to all the players
         for player_id in range(self.player_num):
-            state = self.get_state(player_id)
+            state=self.get_state(player_id)
             trajectories[player_id].append(state)
 
         # Payoffs
-        payoffs = self.get_payoffs()
-        #print("start")
-        #print(trajectories[0][0])
+        payoffs=self.get_payoffs()
+        # print("start")
+        # print(trajectories[0][0])
 
         # Reorganize the trajectories
-        trajectories = reorganize(trajectories, payoffs)
+        trajectories=reorganize(trajectories, payoffs)
 
-        
 
-        #return trajectories, payoffs
+
+        # return trajectories, payoffs
 
     def is_over(self):
         ''' Check whether the curent game is over
@@ -373,8 +469,8 @@ class Env(object):
         raise NotImplementedError
 
     def _seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
-        self.game.np_random = self.np_random
+        self.np_random, seed=seeding.np_random(seed)
+        self.game.np_random=self.np_random
         return seed
 
     def _init_game(self):
@@ -386,9 +482,9 @@ class Env(object):
                 (numpy.array): The begining state of the game
                 (int): The begining player
         '''
-        state, player_id = self.game.init_game()
+        state, player_id=self.game.init_game()
         if self.record_action:
-            self.action_recorder = []
+            self.action_recorder=[]
         return self._extract_state(state), player_id
 
     def _load_model(self):
@@ -443,26 +539,27 @@ class Env(object):
         Returns:
             next_state (numpy.array): The next state
         '''
-        reward = 0.
-        done = False
+        reward=0.
+        done=False
         self.timestep += 1
-        state, player_id = self.game.step(action)
+        state, player_id=self.game.step(action)
         while not self.game.is_over() and not player_id == self.active_player:
             self.timestep += 1
-            action, _ = self.model.agents[player_id].eval_step(self._extract_state(state))
+            action, _=self.model.agents[player_id].eval_step(
+                self._extract_state(state))
             if not self.model.agents[player_id].use_raw:
-                action = self._decode_action(action)
-            state, player_id = self.game.step(action)
+                action=self._decode_action(action)
+            state, player_id=self.game.step(action)
 
         if self.game.is_over():
-            reward = self.get_payoffs()[self.active_player]
-            done = True
-            state = self.reset()
+            reward=self.get_payoffs()[self.active_player]
+            done=True
+            state=self.reset()
             return state, reward, done
 
         return self._extract_state(state), reward, done
 
-    @staticmethod
+    @ staticmethod
     def init_game():
         ''' (This function has been replaced by `reset()`)
         '''

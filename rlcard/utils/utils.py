@@ -10,9 +10,11 @@ def init_standard_deck():
         (list): A list of Card object
     '''
     suit_list = ['S', 'H', 'D', 'C']
-    rank_list = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
+    rank_list = ['A', '2', '3', '4', '5', '6',
+                 '7', '8', '9', 'T', 'J', 'Q', 'K']
     res = [Card(suit, rank) for suit in suit_list for rank in rank_list]
     return res
+
 
 def init_54_deck():
     ''' Initialize a standard deck of 52 cards, BJ and RJ
@@ -21,7 +23,8 @@ def init_54_deck():
         (list): Alist of Card object
     '''
     suit_list = ['S', 'H', 'D', 'C']
-    rank_list = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
+    rank_list = ['A', '2', '3', '4', '5', '6',
+                 '7', '8', '9', 'T', 'J', 'Q', 'K']
     res = [Card(suit, rank) for suit in suit_list for rank in rank_list]
     res.append(Card('BJ', ''))
     res.append(Card('RJ', ''))
@@ -41,7 +44,7 @@ def get_random_cards(cards, num, np_random=None):
     '''
     if not np_random:
         np_random = np.random.RandomState()
-    if not num> 0:
+    if not num > 0:
         raise AssertionError('Invalid input number')
     if not num <= len(cards):
         raise AssertionError('Input number larger than length of cards')
@@ -52,6 +55,7 @@ def get_random_cards(cards, num, np_random=None):
     chosen_cards = remained_cards[:num]
     remained_cards = remained_cards[num:]
     return chosen_cards, remained_cards
+
 
 def is_pair(cards):
     ''' Check whether the card is a pair
@@ -67,6 +71,7 @@ def is_pair(cards):
     else:
         return False
 
+
 def is_single(cards):
     ''' Check whether the card is singel
 
@@ -80,6 +85,7 @@ def is_single(cards):
         return True
     else:
         return False
+
 
 def rank2int(rank):
     ''' Get the coresponding number of a rank.
@@ -113,6 +119,7 @@ def rank2int(rank):
         return 13
     return None
 
+
 def get_cards_from_ranks(player, ranks):
     ''' Get chosen cards and remained cards from a player's hand according to input rank list
 
@@ -135,6 +142,7 @@ def get_cards_from_ranks(player, ranks):
                 chosen_cards.append(card)
                 remained_cards.pop(remained_cards.index(card))
     return chosen_cards, remained_cards
+
 
 def take_out_cards(cards, remove_cards):
     ''' Take out specific cards from a list of cards
@@ -161,6 +169,7 @@ def take_out_cards(cards, remove_cards):
                 remove_cards_cp.pop(remove_cards_cp.index(remove_card))
     return remove_cards_cp
 
+
 def is_in_cards(origin_cards, check_cards):
     ''' Check if a list of Card objects contains another list of Card objects
 
@@ -185,6 +194,7 @@ def is_in_cards(origin_cards, check_cards):
             return False
     return True
 
+
 def elegent_form(card):
     ''' Get a elegent form of a card string
 
@@ -194,10 +204,12 @@ def elegent_form(card):
     Returns:
         elegent_card (string): A nice form of card
     '''
-    suits = {'S': '♠', 'H': '♥', 'D': '♦', 'C': '♣','s': '♠', 'h': '♥', 'd': '♦', 'c': '♣' }
+    suits = {'S': '♠', 'H': '♥', 'D': '♦', 'C': '♣',
+             's': '♠', 'h': '♥', 'd': '♦', 'c': '♣'}
     rank = '10' if card[1] == 'T' else card[1]
 
     return suits[card[0]] + rank
+
 
 def print_card(cards):
     ''' Nicely print a card or list of cards
@@ -246,8 +258,7 @@ def print_card(cards):
             lines[8].append('└─────────┘')
 
     for line in lines:
-        print ('   '.join(line))
-
+        print('   '.join(line))
 
 
 def init_players(n):
@@ -265,6 +276,7 @@ def init_players(n):
         players.append(Player(idx))
     return players
 
+
 def get_upstream_player_id(player, players):
     ''' Obtain the upsteam player's player_id
 
@@ -274,7 +286,8 @@ def get_upstream_player_id(player, players):
 
     Note: This function assumes player_id(s) in 'players' list starts from 0, and are consequent.
     '''
-    return (player.player_id-1)%len(players)
+    return (player.player_id-1) % len(players)
+
 
 def get_downstream_player_id(player, players):
     ''' Obtain the downsteam player's player_id
@@ -286,7 +299,8 @@ def get_downstream_player_id(player, players):
     Note: This function assumes player_id(s) in 'players' list start from 0, and are consequent.
     '''
 
-    return (player.player_id+1)%len(players)
+    return (player.player_id+1) % len(players)
+
 
 def reorganize(trajectories, payoffs):
     ''' Reorganize the trajectory to make it RL friendly
@@ -304,9 +318,9 @@ def reorganize(trajectories, payoffs):
 
     for player in range(player_num):
         for i in range(0, len(trajectories[player])-2, 2):
-            if i ==len(trajectories[player])-3:
+            if i == len(trajectories[player])-3:
                 reward = payoffs[player]
-                done =True
+                done = True
             else:
                 reward, done = 0, False
             transition = trajectories[player][i:i+3].copy()
@@ -315,6 +329,7 @@ def reorganize(trajectories, payoffs):
 
             new_trajectories[player].append(transition)
     return new_trajectories
+
 
 def set_global_seed(seed):
     ''' Set the global see for reproducing results
@@ -340,6 +355,7 @@ def set_global_seed(seed):
         np.random.seed(seed)
         import random
         random.seed(seed)
+
 
 def remove_illegal(action_probs, legal_actions):
     ''' Remove illegal actions and normalize the
@@ -375,6 +391,7 @@ def assign_task(task_num, process_num):
     per_tasks[0] += (task_num % process_num)
     return per_tasks
 
+
 def tournament(env, num):
     ''' Evaluate he performance of the agents in the environment
 
@@ -386,10 +403,34 @@ def tournament(env, num):
         A list of avrage payoffs for each player
     '''
     payoffs = [0 for _ in range(env.player_num)]
+    payoffs_easy = [0 for _ in range(env.player_num)]
+    payoffs_medium = [0 for _ in range(env.player_num)]
+    payoffs_hard = [0 for _ in range(env.player_num)]
+
+    num_easy = 0
+    num_medium = 0
+    num_hard = 0
+
+    easy = 15
+    hard = -15
+
     counter = 0
     win_num = 0
+    win_num_easy = 0
+    win_num_medium = 0
+    win_num_hard = 0
+
+    difficulty_list = []
+
     while counter < num:
-        _, _payoffs = env.run(is_training=False)
+        _, _payoffs, difficulty = env.run(is_training=False)
+        difficulty_list.append(difficulty)
+        if difficulty >= easy:
+            num_easy += 1
+        elif difficulty <= hard:
+            num_hard += 1
+        else:
+            num_medium += 1
         if isinstance(_payoffs, list):
             for _p in _payoffs:
                 for i, _ in enumerate(payoffs):
@@ -397,21 +438,44 @@ def tournament(env, num):
                     #print(i, _p[i])
                     #print(i, _payoffs[i])
                     if i == 0 & _p[i] > 0:
-                        win_num +=1
+                        win_num += 1
+                        if difficulty >= easy:
+                            win_num_easy += 1
+                        elif difficulty <= hard:
+                            win_num_hard += 1
+                        else:
+                            win_num_medium += 1
                 counter += 1
         else:
             for i, _ in enumerate(payoffs):
-                payoffs[i] += _payoffs[i]                
+                payoffs[i] += _payoffs[i]
                 if i == 0 and _payoffs[i] > 0:
                     #print(i, _payoffs[i])
-                    win_num +=1
+                    win_num += 1
+                    if difficulty >= easy:
+                        win_num_easy += 1
+                    elif difficulty <= hard:
+                        win_num_hard += 1
+                    else:
+                        win_num_medium += 1
             counter += 1
-    #print(payoffs)
+    # print(payoffs)
     for i, _ in enumerate(payoffs):
         payoffs[i] /= counter
-    #print(win_num)
+    # print(win_num)
     win_num = win_num/num
-    #print(num)
-    #print(win_num)
-    return payoffs, win_num
+    # print()
+    # print(max(difficulty_list))
+    # print(min(difficulty_list))
+    # print(sum(difficulty_list)/len(difficulty_list))
+    # print("Easy: ", num_easy, " Win num: ",
+    #       win_num_easy, " Rate: ", win_num_easy/num_easy)
+    # print("Medium: ", num_medium, " Win num: ",
+    #       win_num_medium, " Rate: ", win_num_medium/num_medium)
+    # print("Hard: ", num_hard, " Win num: ",
+    #       win_num_hard, " Rate: ", win_num_hard/num_hard)
 
+    win_num_list = [win_num, win_num_easy/num_easy, win_num_medium/num_medium, win_num_hard/num_hard]
+    # print(num)
+    # print(win_num)
+    return payoffs, win_num_list

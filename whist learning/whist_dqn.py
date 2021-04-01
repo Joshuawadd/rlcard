@@ -100,7 +100,7 @@ with tf.Session() as sess:
     for episode in tqdm(range(episode_num)):
 
         # Generate data from the environment
-        trajectories, _ = env.run(is_training=True)
+        trajectories, _, _ = env.run(is_training=True)
 
         # Feed transitions into agent memory, and train the agent
         # for trajectory in trajectories:
