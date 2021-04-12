@@ -7,19 +7,20 @@ from rlcard.agents import RandomAgent
 from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 from tqdm import tqdm
+import plot
 
 import time
 
 # Make environment
-env = rlcard.make('whist', config={'seed': 0})
-eval_env = rlcard.make('whist', config={'seed': 0})
+env = rlcard.make('whist', config={'seed': 0, 'allow_raw_data': True})
+eval_env = rlcard.make('whist', config={'seed': 0, 'allow_raw_data': True})
 
 start = time.time()
 
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 1000
-evaluate_num = 200
-episode_num = 60000
+evaluate_num = 3000
+episode_num = 400000
 
 # The intial memory size
 memory_init_size = 1000
@@ -28,7 +29,10 @@ memory_init_size = 1000
 train_every = 64
 
 # The paths for saving the logs and learning curves
-log_dir = './experiments/whist_nfsp_result/'
+timestr = time.strftime("%Y%m%d-%H%M%S")
+
+# The paths for saving the logs and learning curves
+log_dir = './experiments/whist_nfsp_result/' + timestr +'/'
 
 # Set a global seed
 set_global_seed(0)
@@ -74,10 +78,12 @@ with tf.Session() as sess:
 
     logger = Logger(log_dir)
 
-    file = open("./experiments/whist_nfsp_result/game_log.txt","w")
+    game_log_dir = log_dir + 'game_log.txt'
+
+    file = open(game_log_dir,"w")
     file.close()
 
-    eval_env.run_example(is_training=False, is_dqn=False)
+    eval_env.run_example(game_log_dir, is_training=False)
 
     for episode in tqdm(range(episode_num)):
 
@@ -86,7 +92,7 @@ with tf.Session() as sess:
             agent.sample_episode_policy()
 
         # Generate data from the environment
-        trajectories, _ = env.run(is_training=True)
+        trajectories, _, _ = env.run(is_training=True)
 
         # Feed transitions into agent memory, and train the agent
         for i in range(env.player_num):
@@ -95,18 +101,26 @@ with tf.Session() as sess:
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
-            logger.log_performance(env.timestep, tournament(eval_env, evaluate_num)[0])
+            reward, win_rate = tournament(eval_env, evaluate_num)
+            #print(win_rate)
+            logger.log_performance(
+                episode, reward[0], win_rate)
 
-        if episode % (evaluate_every*10) == 0:
+        if episode % 1000 == 0:
+            logger.close_files()
+            logger.plot('NFSP')
+            plot.dot_plot(log_dir, 'NFSP')
+
+        if episode % 1000 == 0:
             if episode != 0:
-                current_time = (time.time() - start)/60
-                time_left = (episode_num - episode)/(episode/current_time)
-                print()
-                print(episode, current_time, episode/current_time)
-                print("Time left:", time_left)
-                print()
-                dqn = False
-                eval_env.run_example(is_training=False, is_dqn=False)
+                # current_time = (time.time() - start)/60
+                # time_left = (episode_num - episode)/(episode/current_time)
+                # print()
+                # print(episode, current_time, episode/current_time)
+                # print("Time left:", time_left)
+                # print()
+                # dqn = False
+                eval_env.run_example(game_log_dir, is_training=False)
 
 
     # Close files in the logger
