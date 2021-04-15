@@ -19,7 +19,7 @@ class WhistDealer(Dealer):
 
     def choose_trump_suit(self):
         suit_list = ['S', 'H', 'D', 'C']
-        return (np.random.choice(suit_list))
+        return (self.np_random.choice(suit_list))
 
 
     def deal_card(self):
