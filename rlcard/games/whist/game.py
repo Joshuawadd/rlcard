@@ -1,5 +1,6 @@
 from rlcard.utils.utils import init_standard_deck, elegent_form
 import numpy as np
+from rlcard.games.whist.utils import cards2list
 
 from rlcard.core import Game
 from rlcard.games.whist import Dealer
@@ -108,6 +109,13 @@ class WhistGame(Game):
         state['player_num'] = self.get_player_num()
         state['current_player'] = self.round.current_player
         state['trump_suit'] = self.trump_suit
+        trump_cards = []
+        deck = init_standard_deck()
+        for card in deck:
+            if card.suit == self.trump_suit:
+                trump_cards.append(card)
+
+        state['trump_cards'] = cards2list(trump_cards)
         return state
 
     def get_legal_actions(self):

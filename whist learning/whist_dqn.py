@@ -72,7 +72,7 @@ with tf.Session() as sess:
     random_agent_1 = RandomAgent(action_num=eval_env.action_num)
     #random_agent_2 = RandomAgent(action_num=eval_env.action_num)
 
-    #env.set_agents([agents[0], agents[0], agents[1], agents[1]])
+    # env.set_agents([agents[0], agents[0], agents[1], agents[1]])
     # env.set_agents(agents)
     # eval_env.set_agents([agents[0], random_agent_0, agents[2], random_agent_1])
 
