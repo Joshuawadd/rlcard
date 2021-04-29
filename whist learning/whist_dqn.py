@@ -24,7 +24,7 @@ start = time.time()
 # Set the iterations numbers and how frequently we evaluate the performance
 evaluate_every = 1000
 evaluate_num = 6000
-episode_num = 100000
+episode_num = 400000
 
 # The intial memory size
 memory_init_size = 1000
@@ -81,11 +81,11 @@ with tf.Session() as sess:
 
     # env.set_agents([agent, agent_0, agent_1, agent_2])
 
-    # eval_env.set_agents([agent, random_agent_0, agent, random_agent_1])
+    eval_env.set_agents([agent, random_agent_0, agent, random_agent_1])
     # env.set_agents([agent, agent, agent, agent])
 
     env.set_agents([agent, rule_agents[0], agent, rule_agents[1]])
-    eval_env.set_agents([agent, rule_agents[0], agent, rule_agents[1]])
+    # eval_env.set_agents([agent, rule_agents[0], agent, rule_agents[1]])
 
     # eval_env.set_agents([agent, agent, agent, agent])
 
