@@ -110,3 +110,42 @@ class LeducHoldemCFRModel(Model):
         '''
         return [self.agent, self.agent]
 
+
+class WhistDQNModel(Model):
+    ''' A pretrained model on Whist with DQN
+    '''
+
+    def __init__(self):
+        ''' Load pretrained model
+        '''
+        import tensorflow as tf
+        from rlcard.agents import DQNAgent
+        self.graph = tf.Graph()
+        self.sess = tf.Session(graph=self.graph)
+
+        env = rlcard.make('whist')
+        with self.graph.as_default():
+            self.dqn_agents = []
+            self.dqn_agent = DQNAgent(self.sess,
+                    scope='dqn',
+                    action_num=env.action_num,
+                    state_shape=env.state_shape,
+                    mlp_layers=[1024, 1024])
+
+        check_point_path = os.path.join(ROOT_PATH, 'whist_dqn')
+        with self.sess.as_default():
+            with self.graph.as_default():
+                saver = tf.train.Saver()
+                saver.restore(self.sess, tf.train.latest_checkpoint(check_point_path))
+    @property
+    def agents(self):
+        ''' Get a list of agents for each position in a the game
+
+        Returns:
+            agents (list): A list of agents
+
+        Note: Each agent should be just like RL agent with step and eval_step
+              functioning well.
+        '''
+        return self.dqn_agent
+
