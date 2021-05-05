@@ -1,0 +1,2 @@
+episodes,reward
+1000 - Self trained DQN against random agent,0.066

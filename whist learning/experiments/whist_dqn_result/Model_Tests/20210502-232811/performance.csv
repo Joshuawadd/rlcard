@@ -1,0 +1,7 @@
+episodes,reward
+500 - Self trained DQN against random agent,0.128
+500 - Self trained DQN against rule based agent,-2.424
+500 - Rule trained DQN against random agent,0.26
+500 - Rule trained DQN against Rule based agent,-2.604
+500 - Self trained DQN against Rule trained DQN,-0.064
+500 - Random agent against rule based agent,-2.656

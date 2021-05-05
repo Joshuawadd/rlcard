@@ -60,6 +60,16 @@ if 'tensorflow' in installed_packages:
         model_id = 'whist-dqn',
         entry_point='rlcard.models.pretrained_models:WhistDQNModel')
 
+if 'tensorflow' in installed_packages:
+    import tensorflow as tf
+    if version.parse(tf.__version__) < version.parse('1.14.0') \
+            or version.parse(tf.__version__) >= version.parse('2.0.0'):
+        print('WAINING - RLCard supports Tensorflow >=1.14 and <2.0\nThe detected version is {} \nIf the models can not be loaded, please install Tensorflow via\n$ pip install rlcard[tensorflow]\n'.format(tf.__version__))
+    register(
+        model_id = 'whist-dqn-rule',
+        entry_point='rlcard.models.pretrained_models:WhistDQNRuleModel')
+
 register(
     model_id = 'whist-rule-v1',
     entry_point='rlcard.models.whist_rule_models:WhistRuleModelV1')
+

@@ -1,0 +1,8 @@
+----------------------------------------
+  episodes        |  1000 - Self trained DQN against random agent
+  reward          |  0.066
+  win rate        |  0.503
+  win rate easy   |  0.8888888888888888
+  win rate medium |  0.5065616797900262
+  win rate hard   |  0.14285714285714285
+----------------------------------------

@@ -90,7 +90,6 @@ class WhistRound(Round):
 
     def get_legal_actions(self, players, player_id, lead_player, lead_card):
         legal_actions = []
-        wild_4_actions = []
         hand = players[player_id].hand
         target = self.target
         #print(lead_card)

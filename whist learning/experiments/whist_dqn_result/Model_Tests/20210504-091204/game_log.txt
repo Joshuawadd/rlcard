@@ -1,0 +1,143 @@
+
+Difficulty: -2
+Player 0 hand: ['7S', '2H', 'AD', '2C', 'KC', '8S', '2S', '7C', '9S', 'TS', '4H', 'AC']
+Player 1 hand: ['TH', '2D', 'JS', '8D', 'JC', 'QC', '3H', '5C', 'QD', 'JH', 'KS', 'AS']
+Player 2 hand: ['3D', '9H', '8H', '4D', 'KD', '5H', 'QH', '7D', '9D', 'QS', 'TD', '9C']
+Player 3 hand: ['6C', 'TC', '6D', '5S', '5D', '3C', 'JD', '4C', '3S', '4S', '8C', '6S']
+Lead player: 0
+Trump Suit: S
+Played Cards: ['6H', 'AH', 'KH', '7H']
+Winner: 1 Winning card: AH
+Score: 0 1 0 1
+
+Difficulty: -2
+Player 0 hand: ['7S', '2H', '2C', 'KC', '8S', '2S', '7C', '9S', 'TS', '4H', 'AC']
+Player 1 hand: ['TH', 'JS', '8D', 'JC', 'QC', '3H', '5C', 'QD', 'JH', 'KS', 'AS']
+Player 2 hand: ['3D', '9H', '8H', '4D', '5H', 'QH', '7D', '9D', 'QS', 'TD', '9C']
+Player 3 hand: ['6C', 'TC', '6D', '5S', '5D', '3C', '4C', '3S', '4S', '8C', '6S']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['2D', 'KD', 'JD', 'AD']
+Winner: 0 Winning card: AD
+Score: 1 1 1 1
+
+Difficulty: -2
+Player 0 hand: ['7S', '2H', '2C', 'KC', '8S', '2S', '7C', '9S', 'TS', '4H']
+Player 1 hand: ['TH', 'JS', '8D', 'JC', 'QC', '3H', 'QD', 'JH', 'KS', 'AS']
+Player 2 hand: ['3D', '9H', '8H', '4D', '5H', 'QH', '7D', '9D', 'QS', 'TD']
+Player 3 hand: ['6C', 'TC', '6D', '5S', '5D', '4C', '3S', '4S', '8C', '6S']
+Lead player: 0
+Trump Suit: S
+Played Cards: ['AC', '5C', '9C', '3C']
+Winner: 0 Winning card: AC
+Score: 2 1 2 1
+
+Difficulty: -2
+Player 0 hand: ['7S', '2H', '2C', 'KC', '8S', '2S', '7C', 'TS', '4H']
+Player 1 hand: ['TH', 'JS', '8D', 'JC', 'QC', '3H', 'QD', 'JH', 'AS']
+Player 2 hand: ['3D', '9H', '8H', '4D', '5H', 'QH', '7D', '9D', 'TD']
+Player 3 hand: ['6C', 'TC', '6D', '5S', '5D', '4C', '3S', '4S', '8C']
+Lead player: 0
+Trump Suit: S
+Played Cards: ['9S', 'KS', 'QS', '6S']
+Winner: 1 Winning card: KS
+Score: 2 2 2 2
+
+Difficulty: -2
+Player 0 hand: ['2H', '2C', 'KC', '8S', '2S', '7C', 'TS', '4H']
+Player 1 hand: ['TH', 'JS', '8D', 'JC', 'QC', '3H', 'QD', 'JH']
+Player 2 hand: ['9H', '8H', '4D', '5H', 'QH', '7D', '9D', 'TD']
+Player 3 hand: ['6C', 'TC', '6D', '5D', '4C', '3S', '4S', '8C']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['AS', '3D', '5S', '7S']
+Winner: 1 Winning card: AS
+Score: 2 3 2 3
+
+Difficulty: -2
+Player 0 hand: ['2C', 'KC', '8S', '2S', '7C', 'TS', '4H']
+Player 1 hand: ['TH', 'JS', '8D', 'JC', 'QC', 'QD', 'JH']
+Player 2 hand: ['9H', '8H', '4D', '5H', '7D', '9D', 'TD']
+Player 3 hand: ['6C', 'TC', '6D', '5D', '3S', '4S', '8C']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['3H', 'QH', '4C', '2H']
+Winner: 2 Winning card: QH
+Score: 3 3 3 3
+
+Difficulty: -2
+Player 0 hand: ['2C', 'KC', '8S', '7C', 'TS', '4H']
+Player 1 hand: ['TH', 'JS', 'JC', 'QC', 'QD', 'JH']
+Player 2 hand: ['9H', '8H', '5H', '7D', '9D', 'TD']
+Player 3 hand: ['6C', 'TC', '5D', '3S', '4S', '8C']
+Lead player: 2
+Trump Suit: S
+Played Cards: ['4D', '6D', '2S', '8D']
+Winner: 0 Winning card: 2S
+Score: 4 3 4 3
+
+Difficulty: -2
+Player 0 hand: ['2C', 'KC', '8S', '7C', '4H']
+Player 1 hand: ['TH', 'JC', 'QC', 'QD', 'JH']
+Player 2 hand: ['9H', '8H', '7D', '9D', 'TD']
+Player 3 hand: ['6C', 'TC', '5D', '3S', '8C']
+Lead player: 0
+Trump Suit: S
+Played Cards: ['TS', 'JS', '5H', '4S']
+Winner: 1 Winning card: JS
+Score: 4 4 4 4
+
+Difficulty: -2
+Player 0 hand: ['2C', 'KC', '8S', '7C']
+Player 1 hand: ['TH', 'JC', 'QC', 'QD']
+Player 2 hand: ['8H', '7D', '9D', 'TD']
+Player 3 hand: ['6C', 'TC', '5D', '3S']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['JH', '9H', '8C', '4H']
+Winner: 1 Winning card: JH
+Score: 4 5 4 5
+
+Difficulty: -2
+Player 0 hand: ['2C', 'KC', '8S']
+Player 1 hand: ['TH', 'JC', 'QD']
+Player 2 hand: ['8H', '7D', '9D']
+Player 3 hand: ['6C', '5D', '3S']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['QC', 'TD', 'TC', '7C']
+Winner: 1 Winning card: QC
+Score: 4 6 4 6
+
+Difficulty: -2
+Player 0 hand: ['KC', '8S']
+Player 1 hand: ['TH', 'JC']
+Player 2 hand: ['8H', '9D']
+Player 3 hand: ['6C', '3S']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['QD', '7D', '5D', '2C']
+Winner: 1 Winning card: QD
+Score: 4 7 4 7
+
+Difficulty: -2
+Player 0 hand: ['KC']
+Player 1 hand: ['JC']
+Player 2 hand: ['9D']
+Player 3 hand: ['6C']
+Lead player: 1
+Trump Suit: S
+Played Cards: ['TH', '8H', '3S', '8S']
+Winner: 0 Winning card: 8S
+Score: 5 7 5 7
+
+Difficulty: -2
+Player 0 hand: []
+Player 1 hand: []
+Player 2 hand: []
+Player 3 hand: []
+Lead player: 0
+Trump Suit: S
+Played Cards: ['KC', 'JC', '9D', '6C']
+Winner: 0 Winning card: KC
+Score: 6 7 6 7

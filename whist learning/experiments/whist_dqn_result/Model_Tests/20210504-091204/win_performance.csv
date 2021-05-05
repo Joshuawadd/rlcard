@@ -1,0 +1,2 @@
+episodes,win rate,win rate easy,win rate medium,win rate hard
+1000 - Self trained DQN against random agent,0.503,0.8888888888888888,0.5065616797900262,0.14285714285714285

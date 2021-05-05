@@ -1,0 +1,48 @@
+----------------------------------------
+  episodes        |  Self trained DQN against random agent
+  reward          |  0.128
+  win rate        |  0.516
+  win rate easy   |  0.896551724137931
+  win rate medium |  0.545
+  win rate hard   |  0.12258064516129032
+----------------------------------------
+----------------------------------------
+  episodes        |  Self trained DQN against rule based agent
+  reward          |  -2.424
+  win rate        |  0.286
+  win rate easy   |  0.6827586206896552
+  win rate medium |  0.195
+  win rate hard   |  0.03225806451612903
+----------------------------------------
+----------------------------------------
+  episodes        |  Rule trained DQN against random agent
+  reward          |  0.26
+  win rate        |  0.528
+  win rate easy   |  0.8551724137931035
+  win rate medium |  0.565
+  win rate hard   |  0.17419354838709677
+----------------------------------------
+----------------------------------------
+  episodes        |  500Rule trained DQN against Rule based agent
+  reward          |  -2.604
+  win rate        |  0.27
+  win rate easy   |  0.6551724137931034
+  win rate medium |  0.195
+  win rate hard   |  0.0064516129032258064
+----------------------------------------
+----------------------------------------
+  episodes        |  500Self trained DQN against Rule trained DQN
+  reward          |  -0.064
+  win rate        |  0.494
+  win rate easy   |  0.8551724137931035
+  win rate medium |  0.48
+  win rate hard   |  0.17419354838709677
+----------------------------------------
+----------------------------------------
+  episodes        |  500Random agent against rule based agent
+  reward          |  -2.656
+  win rate        |  0.268
+  win rate easy   |  0.6206896551724138
+  win rate medium |  0.205
+  win rate hard   |  0.01935483870967742
+----------------------------------------
